@@ -1,0 +1,5 @@
+pydantic~=1.10.2
+aiogram~=3.0.0b6
+sqlalchemy~=1.4.44
+aiohttp~=3.8.3
+python-dotenv~=0.20.0
