@@ -29,18 +29,15 @@ async def main():
             await bot.delete_webhook()
             await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
         else:
-            # Выключаем логи от aiohttp
             aiohttp_logger = logging.getLogger("aiohttp.access")
             aiohttp_logger.setLevel(logging.CRITICAL)
 
-            # Установка вебхука
             await bot.set_webhook(
                 url=config.webhook_domain + config.webhook_path,
                 drop_pending_updates=True,
                 allowed_updates=dp.resolve_used_update_types()
             )
 
-            # Создание запуска aiohttp
             app = web.Application()
             SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=config.webhook_path)
             runner = web.AppRunner(app)
@@ -48,7 +45,6 @@ async def main():
             site = web.TCPSite(runner, host=config.app_host, port=config.app_port)
             await site.start()
 
-            # Бесконечный цикл
             await asyncio.Event().wait()
     finally:
         await bot.session.close()
