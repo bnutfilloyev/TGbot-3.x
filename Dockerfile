@@ -1,5 +1,5 @@
 # Separate build image
-FROM python:3.9-slim-bullseye as compile-image
+FROM python:3.9-slim as builder
 
 RUN python -m venv /opt/venv
 
@@ -15,8 +15,8 @@ RUN apt-get update \
      && rm -rf /var/lib/apt/lists/*
 
 # Final image
-FROM python:3.9-slim-bullseye
-COPY --from=compile-image /opt/venv /opt/venv
+FROM python:3.9-slim
+COPY --from=builder /opt/venv /opt/venv
 
 ENV PATH="/opt/venv/bin:$PATH"
 
