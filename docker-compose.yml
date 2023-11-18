@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  bot:
+    build: 
+      context: bot
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DEBUG=False
+    networks:
+      - bot-network
+    
+
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27027:27017"
+    env_file:
+      - .env
+    volumes:
+      - ./mongodb/data:/data/db
+    networks:
+      - bot-network
+
+
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - "32123:8081"
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32123/status"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+
+networks:
+  bot-network:
+    driver: bridge
