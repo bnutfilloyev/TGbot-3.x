@@ -24,6 +24,6 @@ COPY --from=builder /app/requirements.txt .
 
 RUN pip install --no-cache /wheels/*
 
-COPY bot .
+COPY . .
 
 CMD ["python", "-u", "main.py"]

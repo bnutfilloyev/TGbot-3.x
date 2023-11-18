@@ -1,13 +1,22 @@
 import asyncio
 import logging
 
-from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from aiogram import Bot
-from aiogram.exceptions import TelegramForbiddenError, TelegramNotFound, TelegramRetryAfter, TelegramAPIError
+from aiogram.exceptions import (
+    TelegramAPIError,
+    TelegramForbiddenError,
+    TelegramNotFound,
+    TelegramRetryAfter,
+)
+from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 
 
 async def copy_message(
-    user_id: str, chat_id: int, message_id: int, keyboard: InlineKeyboardMarkup, bot: Bot
+    user_id: str,
+    chat_id: int,
+    message_id: int,
+    keyboard: InlineKeyboardMarkup,
+    bot: Bot,
 ) -> bool:
     """
     Safe messages sender
@@ -40,8 +49,11 @@ async def copy_message(
 
 
 async def send_message(
-        user_id: int, text: str,  keyboard: InlineKeyboardMarkup | ReplyKeyboardMarkup, bot: Bot
-        ) -> bool:
+    user_id: int,
+    text: str,
+    keyboard: InlineKeyboardMarkup | ReplyKeyboardMarkup,
+    bot: Bot,
+) -> bool:
     """
     Safe messages sender
     :param user_id:
@@ -56,7 +68,9 @@ async def send_message(
     except TelegramNotFound:
         logging.error(f"Target [ID:{user_id}]: invalid user ID")
     except TelegramRetryAfter as e:
-        logging.error(f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds.")
+        logging.error(
+            f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds."
+        )
         await asyncio.sleep(e.timeout)
         return await send_message(user_id, text)  # Recursive call
     except TelegramAPIError:
@@ -66,9 +80,14 @@ async def send_message(
         return True
     return False
 
+
 async def send_photo(
-        user_id: int, photo: str, caption: str, keyboard: InlineKeyboardMarkup | ReplyKeyboardMarkup, bot: Bot
-        ) -> bool:
+    user_id: int,
+    photo: str,
+    caption: str,
+    keyboard: InlineKeyboardMarkup | ReplyKeyboardMarkup,
+    bot: Bot,
+) -> bool:
     """
     Safe messages sender
     :param user_id:
@@ -83,7 +102,9 @@ async def send_photo(
     except TelegramNotFound:
         logging.error(f"Target [ID:{user_id}]: invalid user ID")
     except TelegramRetryAfter as e:
-        logging.error(f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds.")
+        logging.error(
+            f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.timeout} seconds."
+        )
         await asyncio.sleep(e.timeout)
         return await send_photo(user_id, photo, caption, keyboard)
     except TelegramAPIError:

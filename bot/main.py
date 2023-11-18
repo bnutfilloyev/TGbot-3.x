@@ -32,11 +32,11 @@ def get_dispatcher(
 async def start_bot():
     """This function will start bot with polling mode."""
     bot = Bot(token=conf.bot.token, parse_mode="HTML")
+    await on_startup(bot)
     dp = get_dispatcher()
 
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
-        await on_startup(bot)
     finally:
         await dp.storage.close()
         await bot.session.close()
